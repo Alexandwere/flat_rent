@@ -1,14 +1,9 @@
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: Alexandwere
-      changes:
-        - createTable:
-            tableName: example_table
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  constraints:
-                    primaryKey: true
-                    nullable: false
+  - include:
+      file: db/changelog/1.4.1_apartment.xml
+  - include:
+      file: db/changelog/1.4.2_advert.xml
+  - include:
+      file: db/changelog/1.4.3_client.xml
+  - include:
+      file: db/changelog/1.4.4_booking.xml

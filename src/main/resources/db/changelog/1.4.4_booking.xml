@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="2025022125" author="Alexandwere">
+        <createTable tableName="booking">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" primaryKeyName="booking_id_pk"/>
+            </column>
+            <column name="begin_booking_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_booking_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="client"
+                             referencedColumnNames="id"
+                             foreignKeyName="client_id_fk"/>
+            </column>
+            <column name="advert_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="advert"
+                             referencedColumnNames="id"
+                             foreignKeyName="advert_id_fk"/>
+            </column>
+            <column name="price" type="numeric(12, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

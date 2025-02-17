@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="202502171850" author="Alexandwere">
+        <sql>
+            create type apartment_type_enum as enum (
+                'STUDIO',
+                'ONE_ROOM',
+                'TWO_ROOM',
+                'THREE_ROOM',
+                'FOUR_ROOM',
+                'FOUR_PLUS_ROOM'
+            );
+        </sql>
+
+        <createTable tableName="apartment">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" primaryKeyName="apartment_id_pk"/>
+            </column>
+            <column name="city" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count_rooms" type="apartment_type_enum">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="202502171900" author="Alexandwere">
+        <sql>
+            create type adverts_status_enum as enum ('ACTIVE', 'ARCHIVE');
+        </sql>
+
+        <createTable tableName="advert">
+            <column name="id" type="serial">
+                <constraints primaryKey="true" primaryKeyName="advert_id_pk"/>
+            </column>
+            <column name="price" type="numeric(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="adverts_status_enum">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apartment_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="apartment"
+                             referencedColumnNames="id"
+                             foreignKeyName="apartment_id_fk"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
