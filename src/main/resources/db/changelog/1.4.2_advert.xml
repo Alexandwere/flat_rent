@@ -12,7 +12,9 @@
 
         <createTable tableName="advert">
             <column name="id" type="serial">
-                <constraints primaryKey="true" primaryKeyName="advert_id_pk"/>
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="advert_id_pk"/>
             </column>
             <column name="price" type="numeric(18, 2)">
                 <constraints nullable="false"/>

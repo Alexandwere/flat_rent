@@ -5,10 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="2025022125" author="Alexandwere">
+    <changeSet id="202502172125" author="Alexandwere">
         <createTable tableName="booking">
             <column name="id" type="serial">
-                <constraints primaryKey="true" primaryKeyName="booking_id_pk"/>
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="booking_id_pk"/>
             </column>
             <column name="begin_booking_date" type="date">
                 <constraints nullable="false"/>
@@ -28,7 +30,7 @@
                              referencedColumnNames="id"
                              foreignKeyName="advert_id_fk"/>
             </column>
-            <column name="price" type="numeric(12, 2)">
+            <column name="price" type="numeric(18, 2)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -10,16 +10,18 @@
             create type apartment_type_enum as enum (
                 'STUDIO',
                 'ONE_ROOM',
-                'TWO_ROOM',
-                'THREE_ROOM',
-                'FOUR_ROOM',
-                'FOUR_PLUS_ROOM'
+                'TWO_ROOMS',
+                'THREE_ROOMS',
+                'FOUR_ROOMS',
+                'FOUR_PLUS_ROOMS'
             );
         </sql>
 
         <createTable tableName="apartment">
             <column name="id" type="serial">
-                <constraints primaryKey="true" primaryKeyName="apartment_id_pk"/>
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="apartment_id_pk"/>
             </column>
             <column name="city" type="varchar(255)">
                 <constraints nullable="false"/>

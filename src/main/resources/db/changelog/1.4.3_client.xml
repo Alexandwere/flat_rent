@@ -5,10 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="2025022000" author="Alexandwere">
+    <changeSet id="202502172000" author="Alexandwere">
         <createTable tableName="client">
             <column name="id" type="serial">
-                <constraints primaryKey="true" primaryKeyName="client_id_pk"/>
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="client_id_pk"/>
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
