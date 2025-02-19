@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="202502171850" author="Alexandwere">
+        <createTable tableName="apartment">
+            <column name="id" type="serial">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="apartment_id_pk"/>
+            </column>
+            <column name="city" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count_rooms" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="advert">
+            <column name="id" type="serial">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="advert_id_pk"/>
+            </column>
+            <column name="price" type="numeric(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apartment_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="apartment"
+                             referencedColumnNames="id"
+                             foreignKeyName="apartment_id_fk"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="client">
+            <column name="id" type="serial">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="client_id_pk"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"
+                             unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="booking">
+            <column name="id" type="serial">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="booking_id_pk"/>
+            </column>
+            <column name="start_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="client"
+                             referencedColumnNames="id"
+                             foreignKeyName="client_id_fk"/>
+            </column>
+            <column name="advert_id" type="int">
+                <constraints nullable="false"
+                             referencedTableName="advert"
+                             referencedColumnNames="id"
+                             foreignKeyName="advert_id_fk"/>
+            </column>
+            <column name="price" type="numeric(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
