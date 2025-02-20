@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FlatRentApplication {
 
     public static void main(String[] args) {
-    SpringApplication.run(FlatRentApplication.class, args);
+        SpringApplication.run(FlatRentApplication.class, args);
 
     }
 
