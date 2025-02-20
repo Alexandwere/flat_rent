@@ -8,7 +8,6 @@ public class FlatRentApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FlatRentApplication.class, args);
-
     }
 
 }
