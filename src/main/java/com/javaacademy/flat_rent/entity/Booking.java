@@ -5,14 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -32,12 +35,30 @@ public class Booking {
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;
 
+    @ToString.Exclude
+    @ManyToOne
     @Column(name = "client_id", nullable = false)
-    private Integer clientId;
+    private Client client;
 
+    @ToString.Exclude
+    @ManyToOne
     @Column(name = "advert_id", nullable = false)
-    private Integer advertId;
+    private Advert advert;
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Booking booking = (Booking) o;
+        return Objects.equals(id, booking.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
