@@ -32,7 +32,7 @@ public class Advert {
     private boolean isActive;
 
     @Column(name = "apartment_id", nullable = false)
-    private int apartmentId;
+    private Integer apartmentId;
 
     @Column(nullable = false)
     private String description;

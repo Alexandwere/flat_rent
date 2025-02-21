@@ -33,10 +33,10 @@ public class Booking {
     private LocalDateTime endDate;
 
     @Column(name = "client_id", nullable = false)
-    private int clientId;
+    private Integer clientId;
 
     @Column(name = "advert_id", nullable = false)
-    private int advertId;
+    private Integer advertId;
 
     @Column(nullable = false)
     private BigDecimal price;

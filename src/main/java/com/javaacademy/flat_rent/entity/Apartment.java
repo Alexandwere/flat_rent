@@ -1,6 +1,6 @@
 package com.javaacademy.flat_rent.entity;
 
-import com.javaacademy.flat_rent.enums.CountRoomsType;
+import com.javaacademy.flat_rent.enums.ApartmentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,5 +37,5 @@ public class Apartment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "count_rooms", nullable = false)
-    private CountRoomsType countRoomsType;
+    private ApartmentType apartmentType;
 }
