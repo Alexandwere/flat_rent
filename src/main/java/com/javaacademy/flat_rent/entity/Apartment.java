@@ -40,11 +40,11 @@ public class Apartment {
     @Column(nullable = false)
     private String street;
 
-    @Column(name = "house_number", nullable = false)
-    private String houseNumber;
+    @Column(name = "house", nullable = false)
+    private String house;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "count_rooms", nullable = false)
+    @Column(name = "apartment_type", nullable = false)
     private ApartmentType apartmentType;
 
     @ToString.Exclude

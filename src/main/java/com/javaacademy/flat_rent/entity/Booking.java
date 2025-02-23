@@ -48,5 +48,5 @@ public class Booking {
     private Advert advert;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private BigDecimal resultPrice;
 }
