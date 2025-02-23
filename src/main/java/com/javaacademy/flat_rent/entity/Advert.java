@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,6 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -26,10 +26,12 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Advert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(nullable = false)
@@ -49,18 +51,4 @@ public class Advert {
     @ToString.Exclude
     @OneToMany(mappedBy = "advert", fetch = FetchType.EAGER)
     private List<Booking> booking;
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Advert advert = (Advert) o;
-        return Objects.equals(id, advert.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }
