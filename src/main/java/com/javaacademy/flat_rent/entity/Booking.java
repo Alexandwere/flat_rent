@@ -5,11 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,10 +23,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(name = "start_date", nullable = false)
@@ -32,11 +37,15 @@ public class Booking {
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;
 
+    @ToString.Exclude
+    @ManyToOne
     @Column(name = "client_id", nullable = false)
-    private Integer clientId;
+    private Client client;
 
+    @ToString.Exclude
+    @ManyToOne
     @Column(name = "advert_id", nullable = false)
-    private Integer advertId;
+    private Advert advert;
 
     @Column(nullable = false)
     private BigDecimal price;
