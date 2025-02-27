@@ -31,11 +31,11 @@ public class Booking {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    @Column(name = "date_start", nullable = false)
+    private LocalDateTime dateStart;
 
-    @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    @Column(name = "date_finish", nullable = false)
+    private LocalDateTime dateFinish;
 
     @ToString.Exclude
     @ManyToOne

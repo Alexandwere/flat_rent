@@ -16,7 +16,7 @@ public class AdvertService {
     private final AdvertMapper advertMapper;
 
     public AdvertDtoRs save(AdvertDto advertDto) {
-        Advert advert = advertRepository.save(advertMapper.toEntity(advertDto));
+        Advert advert = advertRepository.save(advertMapper.toEntityWithRelation(advertDto));
         return advertMapper.toDto(advert);
     }
 
