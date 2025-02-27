@@ -12,7 +12,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = ApartmentMapper.class)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class AdvertMapper {
     @Autowired
     private ApartmentRepository apartmentRepository;

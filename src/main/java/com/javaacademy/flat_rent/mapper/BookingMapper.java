@@ -15,7 +15,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {AdvertMapper.class, ClientMapper.class})
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = AdvertMapper.class)
 public abstract class BookingMapper {
     @Autowired
     private AdvertRepository advertRepository;
