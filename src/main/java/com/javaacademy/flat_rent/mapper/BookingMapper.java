@@ -15,12 +15,12 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {AdvertMapper.class, ClientMapper.class})
 public abstract class BookingMapper {
     @Autowired
-    AdvertRepository advertRepository;
+    private AdvertRepository advertRepository;
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Mapping(target = "advert", source = "advertId", qualifiedByName = "getAdvert")
     @Mapping(target = "client", source = "clientId", qualifiedByName = "getClient")
@@ -31,12 +31,14 @@ public abstract class BookingMapper {
     @Named("getAdvert")
     protected Advert getAdvert(Integer id) {
         return advertRepository.findById(id)
-                .orElseThrow(() -> new AdvertNotExistsException("Объявлений с таким ID не существует."));
+                .orElseThrow(() -> new AdvertNotExistsException("Объявлений с таким ID (%s) не существует."
+                        .formatted(id)));
     }
 
     @Named("getClient")
     protected Client getClient(Integer id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new ClientNotExistsException("Клиента с таким ID не существует."));
+                .orElseThrow(() -> new ClientNotExistsException("Клиента с таким ID (%s) не существует."
+                        .formatted(id)));
     }
 }

@@ -10,8 +10,7 @@ public enum ApartmentType {
     ONE_ROOM("1 комната"),
     TWO_ROOMS("2 комнаты"),
     THREE_ROOMS("3 комнаты"),
-    FOUR_ROOMS("4 комнаты"),
-    FOUR_PLUS_ROOMS("4 и больше комнат");
+    FOUR_AND_MORE_ROOMS("4 и больше комнат");
 
     private final String description;
 }

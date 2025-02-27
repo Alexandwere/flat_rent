@@ -9,12 +9,17 @@ import java.time.LocalDateTime;
 @Data
 public class BookingDtoRs {
     private Integer id;
+
     private ClientDto client;
+
     private AdvertDtoRs advert;
+
     @JsonProperty("date_start")
     private LocalDateTime dateStart;
+
     @JsonProperty("date_finish")
     private LocalDateTime dateFinish;
+
     @JsonProperty("result_price")
     private BigDecimal resultPrice;
 }

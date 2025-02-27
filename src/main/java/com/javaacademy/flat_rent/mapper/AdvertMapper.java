@@ -12,10 +12,10 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = ApartmentMapper.class)
 public abstract class AdvertMapper {
     @Autowired
-    ApartmentRepository apartmentRepository;
+    private ApartmentRepository apartmentRepository;
 
     @Mapping(target = "apartment", source = "apartmentId", qualifiedByName = "getApartment")
     public abstract Advert toEntityWithRelation(AdvertDto advertDto);
@@ -25,6 +25,7 @@ public abstract class AdvertMapper {
     @Named("getApartment")
     protected Apartment getApartment(Integer id) {
         return apartmentRepository.findById(id)
-                .orElseThrow(() -> new ApartmentNotExistsException("Квартир с таким ID не существует."));
+                .orElseThrow(() -> new ApartmentNotExistsException("Квартир с таким ID (%s) не существует."
+                        .formatted(id)));
     }
 }
