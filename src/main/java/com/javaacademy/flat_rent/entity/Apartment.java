@@ -44,7 +44,7 @@ public class Apartment {
     private String house;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "count_rooms", nullable = false)
+    @Column(name = "apartment_type", nullable = false)
     private ApartmentType apartmentType;
 
     @ToString.Exclude

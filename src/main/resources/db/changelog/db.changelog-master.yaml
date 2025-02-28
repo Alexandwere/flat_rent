@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/flat_rent.xml
+  - include:
+      file: db/changelog/change_flat_rent.xml

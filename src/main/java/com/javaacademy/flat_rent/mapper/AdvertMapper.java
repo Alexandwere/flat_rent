@@ -18,6 +18,7 @@ public abstract class AdvertMapper {
     private ApartmentRepository apartmentRepository;
 
     @Mapping(target = "apartment", source = "apartmentId", qualifiedByName = "getApartment")
+    @Mapping(target = "bookings", ignore = true)
     public abstract Advert toEntityWithRelation(AdvertDto advertDto);
 
     public abstract AdvertDtoRs toDto(Advert advert);
