@@ -5,7 +5,7 @@ import com.javaacademy.flat_rent.entity.Client;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = BookingMapper.class)
 public interface ClientMapper {
 
     Client toEntity(ClientDto clientDto);

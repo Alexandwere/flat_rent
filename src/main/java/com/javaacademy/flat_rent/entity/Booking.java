@@ -31,10 +31,10 @@ public class Booking {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @Column(name = "date_start", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDateTime dateStart;
 
-    @Column(name = "date_finish", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDateTime dateFinish;
 
     @ToString.Exclude

@@ -2,7 +2,6 @@ package com.javaacademy.flat_rent.service;
 
 import com.javaacademy.flat_rent.dto.BookingDto;
 import com.javaacademy.flat_rent.dto.BookingDtoRs;
-import com.javaacademy.flat_rent.entity.Advert;
 import com.javaacademy.flat_rent.entity.Booking;
 import com.javaacademy.flat_rent.mapper.BookingMapper;
 import com.javaacademy.flat_rent.repository.BookingRepository;
@@ -10,9 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
-import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.valueOf;
 
 @Service
@@ -23,15 +21,13 @@ public class BookingService {
 
     public BookingDtoRs save(BookingDto bookingDto) {
         Booking booking = bookingMapper.toEntityWithRelation(bookingDto);
-        Advert advert = booking.getAdvert();
-        BigDecimal resultPrice = calculateResultPrice(booking, advert);
-        booking.setResultPrice(resultPrice);
+        booking.setResultPrice(calculateResultPrice(booking));
         Booking resultBooking = bookingRepository.save(booking);
         return bookingMapper.toDto(resultBooking);
     }
 
-    private BigDecimal calculateResultPrice(Booking booking, Advert advert) {
-        long period = Duration.between(booking.getDateFinish(), booking.getDateStart()).toDays();
-        return advert.getPrice().multiply(valueOf(period).add(ONE));
+    private BigDecimal calculateResultPrice(Booking booking) {
+        long period = ChronoUnit.DAYS.between(booking.getDateStart(), booking.getDateFinish());
+        return booking.getAdvert().getPrice().multiply(valueOf(period));
     }
 }
