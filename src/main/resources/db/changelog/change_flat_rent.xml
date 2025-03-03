@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="202502281730" author="Alexandwere">
+        <renameColumn tableName="apartment"
+                      oldColumnName="house_number"
+                      newColumnName="house"/>
+
+        <renameColumn tableName="apartment"
+                      oldColumnName="count_rooms"
+                      newColumnName="apartment_type"/>
+
+        <renameColumn tableName="booking"
+                      oldColumnName="start_date"
+                      newColumnName="date_start"/>
+
+        <renameColumn tableName="booking"
+                      oldColumnName="end_date"
+                      newColumnName="date_finish"/>
+
+        <renameColumn tableName="booking"
+                      oldColumnName="price"
+                      newColumnName="result_price"/>
+    </changeSet>
+</databaseChangeLog>
