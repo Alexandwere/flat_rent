@@ -16,6 +16,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,10 +34,10 @@ public class Booking {
     private Integer id;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime dateStart;
+    private LocalDate dateStart;
 
     @Column(name = "finish_date", nullable = false)
-    private LocalDateTime dateFinish;
+    private LocalDate dateFinish;
 
     @ToString.Exclude
     @ManyToOne

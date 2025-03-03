@@ -3,21 +3,21 @@ package com.javaacademy.flat_rent.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class BookingDto {
     private Integer id;
 
-    @JsonProperty("client_id")
-    private Integer clientId;
+    @JsonProperty("client")
+    private ClientDto clientDto;
 
     @JsonProperty("advert_id")
     private Integer advertId;
 
     @JsonProperty("date_start")
-    private LocalDateTime dateStart;
+    private LocalDate dateStart;
 
     @JsonProperty("date_finish")
-    private LocalDateTime dateFinish;
+    private LocalDate dateFinish;
 }
