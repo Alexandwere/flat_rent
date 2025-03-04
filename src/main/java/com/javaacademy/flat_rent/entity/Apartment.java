@@ -48,6 +48,6 @@ public class Apartment {
     private ApartmentType apartmentType;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "apartment", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "apartment", fetch = FetchType.LAZY)
     private List<Advert> adverts;
 }

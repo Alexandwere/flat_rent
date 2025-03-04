@@ -10,6 +10,8 @@ import com.javaacademy.flat_rent.mapper.BookingMapper;
 import com.javaacademy.flat_rent.repository.BookingRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,8 @@ import static java.math.BigDecimal.valueOf;
 @Service
 @RequiredArgsConstructor
 public class BookingService {
+    private static final int PAGE_SIZE = 20;
+
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final ClientService clientService;
@@ -34,14 +38,7 @@ public class BookingService {
             throw new EntityNotFoundException("Клиента с ID = %s не существует.".formatted(clientDto.getId()));
         }
 
-        if (bookingDto.getDateStart().isAfter(bookingDto.getDateFinish())) {
-            throw new IllegalArgumentException("Дата начала должна быть раньше даты окончания");
-        }
-
-        List<Booking> bookingsByAdvert = bookingRepository.findAllByAdvertIdUsingNativeSQL(bookingDto.getAdvertId());
-        if (!canBook(bookingsByAdvert, bookingDto)) {
-            throw new IntersectionDateException("Невозможно забронировать в эти даты.");
-        }
+        checkDates(bookingDto);
 
         if (clientDto.getId() == null) {
             clientService.save(clientDto);
@@ -51,6 +48,13 @@ public class BookingService {
         booking.setResultPrice(calculateResultPrice(booking));
         Booking resultBooking = bookingRepository.save(booking);
         return bookingMapper.toDto(resultBooking);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingDtoRs> findAllByEmail(Integer pageNumber, String email) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+        Page<Booking> bookings = bookingRepository.findAllByEmail(email, pageRequest);
+        return bookings.map(bookingMapper::toDto);
     }
 
     private boolean canBook(List<Booking> existingBookings, BookingDto bookingDto) {
@@ -66,5 +70,16 @@ public class BookingService {
     private BigDecimal calculateResultPrice(Booking booking) {
         long period = ChronoUnit.DAYS.between(booking.getDateStart(), booking.getDateFinish());
         return booking.getAdvert().getPrice().multiply(valueOf(period));
+    }
+
+    private void checkDates(BookingDto bookingDto) {
+        if (bookingDto.getDateStart().isAfter(bookingDto.getDateFinish())) {
+            throw new IllegalArgumentException("Дата начала должна быть раньше даты окончания");
+        }
+
+        List<Booking> bookingsByAdvert = bookingRepository.findAllByAdvertIdUsingNativeSQL(bookingDto.getAdvertId());
+        if (!canBook(bookingsByAdvert, bookingDto)) {
+            throw new IntersectionDateException("Невозможно забронировать в эти даты.");
+        }
     }
 }
