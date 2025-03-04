@@ -34,16 +34,15 @@ public class BookingService {
     @Transactional
     public BookingDtoRs save(BookingDto bookingDto) {
         ClientDto clientDto = bookingDto.getClientDto();
+        if (clientDto.getId() == null) {
+            clientDto = clientService.save(clientDto);
+        }
         if (!clientRepository.existsById(clientDto.getId())) {
             throw new EntityNotFoundException("Клиента с ID = %s не существует.".formatted(clientDto.getId()));
         }
 
         checkDates(bookingDto);
-
-        if (clientDto.getId() == null) {
-            clientService.save(clientDto);
-        }
-
+        bookingDto.setClientDto(clientDto);
         Booking booking = bookingMapper.toEntityWithRelation(bookingDto);
         booking.setResultPrice(calculateResultPrice(booking));
         Booking resultBooking = bookingRepository.save(booking);
