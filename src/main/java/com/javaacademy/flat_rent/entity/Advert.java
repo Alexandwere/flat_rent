@@ -1,5 +1,6 @@
 package com.javaacademy.flat_rent.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,7 +42,7 @@ public class Advert {
     private Boolean isActive;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 

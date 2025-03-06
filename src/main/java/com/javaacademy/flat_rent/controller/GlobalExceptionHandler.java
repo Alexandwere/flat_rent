@@ -17,12 +17,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
         IllegalArgumentException.class,
-        EntityNotFoundException.class,
-        IntersectionDateException.class,
         NotActiveAdvertException.class}
     )
     public ResponseEntity<?> handle400exception(RuntimeException e) {
         log.warn(e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handle404exception(RuntimeException e) {
+        log.warn(e.getMessage(), e);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IntersectionDateException.class)
+    public ResponseEntity<?> handle409Exception(RuntimeException e) {
+        log.warn(e.getMessage(), e);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }
