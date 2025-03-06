@@ -42,7 +42,7 @@ public class Advert {
     private Boolean isActive;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 

@@ -4,6 +4,10 @@ import com.javaacademy.flat_rent.dto.AdvertDto;
 import com.javaacademy.flat_rent.dto.AdvertDtoRs;
 import com.javaacademy.flat_rent.service.AdvertService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,14 @@ public class AdvertController {
 
     @Operation(summary = "Сохранение объявления",
             description = "Сохранения объявления с ценой, ID апартаментов, статусом объявления и описанием.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Успешное сохранение.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AdvertDtoRs.class))),
+            @ApiResponse(responseCode = "404", description = "Апартаменты не найдены.",
+                    content = @Content(mediaType = "plain/text"))
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public AdvertDtoRs save(@RequestBody AdvertDto advertDto) {
@@ -38,6 +50,14 @@ public class AdvertController {
 
     @Operation(summary = "Поиск всех объявлений по городу",
             description = "Поиск всех объявлений по городу.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Успешный поиск по городу.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AdvertDtoRs.class))),
+            @ApiResponse(responseCode = "404", description = "Апартаменты не найдены.",
+                    content = @Content(mediaType = "plain/text"))
+    })
     @GetMapping
     public Page<AdvertDtoRs> findAllByCity(
             @RequestParam(defaultValue = "0") Integer pageNumber,

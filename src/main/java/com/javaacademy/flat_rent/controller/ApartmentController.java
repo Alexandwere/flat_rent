@@ -3,6 +3,10 @@ package com.javaacademy.flat_rent.controller;
 import com.javaacademy.flat_rent.dto.ApartmentDto;
 import com.javaacademy.flat_rent.service.ApartmentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,12 @@ public class ApartmentController {
 
     @Operation(summary = "Сохранение апартаментов",
             description = "Сохранения апартаментов по городу, улице, номеру дома и типа апартаментов.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Успешное сохранение.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApartmentDto.class)))
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ApartmentDto save(@RequestBody ApartmentDto apartmentDto) {

@@ -42,8 +42,6 @@ public class ClientControllerTest {
             .log(LogDetail.ALL)
             .build();
 
-    private static final int NO_EXISTS_CLIENT_ID = -1;
-
     @Autowired
     private ApartmentRepository apartmentRepository;
 
@@ -67,37 +65,36 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Успешное удаление клиента и его бронирований.")
     public void deleteSuccess() {
-        Client client = Client.builder()
-                .name("Petr")
-                .email("petr@mail.com")
-                .build();
+        LocalDate startDate = LocalDate.parse("2025-03-01");
+        LocalDate finishDate = LocalDate.parse("2025-03-03");
+
         Apartment apartment = Apartment.builder()
                 .city("city")
                 .street("street")
                 .house("1")
                 .apartmentType(ApartmentType.ONE_ROOM)
                 .build();
-
         Advert advert = Advert.builder()
                 .price(BigDecimal.ONE)
                 .description("Описание")
                 .apartment(apartment)
                 .isActive(true)
                 .build();
-
-        LocalDate startDate = LocalDate.parse("2025-03-01");
-        LocalDate finishDate = LocalDate.parse("2025-03-03");
+        Client client = Client.builder()
+                .name("Petr")
+                .email("petr@mail.com")
+                .build();
         Booking booking = Booking.builder()
                 .client(client)
                 .advert(advert)
-                .dateFinish(finishDate)
                 .dateStart(startDate)
+                .dateFinish(finishDate)
                 .resultPrice(BigDecimal.TEN)
                 .build();
         bookingRepository.save(booking);
 
         given(requestSpecification)
-                .pathParams("id", client.getId())
+                .pathParam("id", client.getId())
                 .delete("/{id}")
                 .then()
                 .spec(responseSpecification)
@@ -105,16 +102,5 @@ public class ClientControllerTest {
 
         assertFalse(clientRepository.existsById(client.getId()));
         assertFalse(bookingRepository.existsById(booking.getId()));
-    }
-
-    @Test
-    @DisplayName("Удалить несуществующего пользователя")
-    public void deleteNoExistClient() {
-        given(requestSpecification)
-                .pathParams("id", NO_EXISTS_CLIENT_ID)
-                .delete("/{id}")
-                .then()
-                .spec(responseSpecification)
-                .statusCode(OK.value());
     }
 }

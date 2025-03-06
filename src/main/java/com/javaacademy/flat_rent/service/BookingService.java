@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -31,6 +32,7 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final ClientService clientService;
     private final ClientRepository clientRepository;
+    private final TransactionTemplate transactionTemplate;
 
     @Transactional
     public BookingDtoRs save(BookingDto bookingDto) {
@@ -39,21 +41,21 @@ public class BookingService {
             clientDto = clientService.save(clientDto);
             bookingDto.setClientDto(clientDto);
         }
-        if (!clientRepository.existsById(clientDto.getId())) {
+        Booking booking = bookingMapper.toEntityWithRelation(bookingDto);
+        if (!clientRepository.existsById(booking.getClient().getId())) {
             throw new EntityNotFoundException("Клиента с ID = %s не существует."
                     .formatted(clientDto.getId()));
         }
 
         checkDates(bookingDto);
 
-        Booking booking = bookingMapper.toEntityWithRelation(bookingDto);
         if (!booking.getAdvert().getIsActive()) {
             throw new NotActiveAdvertException("Объявление с ID = %s не активно"
                     .formatted(booking.getAdvert().getId()));
         }
         booking.setResultPrice(calculateResultPrice(booking));
-        Booking resultBooking = bookingRepository.save(booking);
-        return bookingMapper.toDto(resultBooking);
+        bookingRepository.save(booking);
+        return bookingMapper.toDto(booking);
     }
 
     @Transactional(readOnly = true)
@@ -80,7 +82,7 @@ public class BookingService {
 
     private void checkDates(BookingDto bookingDto) {
         if (bookingDto.getDateStart().isAfter(bookingDto.getDateFinish())) {
-            throw new IllegalArgumentException("Дата начала должна быть раньше даты окончания");
+            throw new IntersectionDateException("Дата начала должна быть раньше даты окончания");
         }
 
         List<Booking> bookingsByAdvert = bookingRepository.findAllByAdvertId(bookingDto.getAdvertId());

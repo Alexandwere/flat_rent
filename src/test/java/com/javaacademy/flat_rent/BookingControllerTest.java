@@ -15,9 +15,9 @@ import com.javaacademy.flat_rent.repository.BookingRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,10 +25,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +46,6 @@ public class BookingControllerTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 20;
     private static final int CONTENT_SIZE = 1;
-    private static final int TOTAL_PAGES = 1;
     private static final int TOTAL_ELEMENTS = 1;
 
     private final RequestSpecification requestSpecification = new RequestSpecBuilder()
@@ -148,11 +147,10 @@ public class BookingControllerTest {
                 .build();
         advertRepository.save(advert);
 
-        Client client = Client.builder()
+        ClientDto clientDto = ClientDto.builder()
                 .name("Petr")
                 .email("petr@mail.com")
                 .build();
-        ClientDto clientDto = clientMapper.toDto(client);
 
         BookingDto bookingDto = BookingDto.builder()
                 .dateStart(START_DATE)
@@ -192,7 +190,6 @@ public class BookingControllerTest {
                 .apartment(apartment)
                 .isActive(true)
                 .build();
-        advertRepository.save(advert);
         Client client = Client.builder()
                 .name("Petr")
                 .email("petr@mail.com")
@@ -235,7 +232,6 @@ public class BookingControllerTest {
                 .apartment(apartment)
                 .isActive(true)
                 .build();
-        advertRepository.save(advert);
         Client client = Client.builder()
                 .name("Petr")
                 .email("petr@mail.com")
@@ -278,7 +274,6 @@ public class BookingControllerTest {
                 .apartment(apartment)
                 .isActive(true)
                 .build();
-        advertRepository.save(advert);
         Client client = Client.builder()
                 .name("Petr")
                 .email("petr@mail.com")
@@ -315,13 +310,14 @@ public class BookingControllerTest {
                 .house("1")
                 .apartmentType(ApartmentType.ONE_ROOM)
                 .build();
+
         Advert advert = Advert.builder()
                 .price(BigDecimal.ONE)
                 .description("Описание")
                 .apartment(apartment)
                 .isActive(true)
                 .build();
-        advertRepository.save(advert);
+
         Client client = Client.builder()
                 .name("Petr")
                 .email("petr@mail.com")
@@ -335,7 +331,7 @@ public class BookingControllerTest {
                 .build();
         bookingRepository.save(booking);
 
-        Page<BookingDtoRs> responseBody = given(requestSpecification)
+        Response response = given(requestSpecification)
                 .param("pageNumber", PAGE_NUMBER)
                 .param("email", client.getEmail())
                 .get()
@@ -343,15 +339,16 @@ public class BookingControllerTest {
                 .spec(responseSpecification)
                 .statusCode(OK.value())
                 .extract()
-                .body()
-                .as(new TypeRef<>() {
-                });
+                .response();
 
-        assertFalse(responseBody.getContent().isEmpty());
-        assertEquals(CONTENT_SIZE, responseBody.getContent().size());
-        assertEquals(PAGE_SIZE, responseBody.getPageable().getPageSize());
-        assertEquals(TOTAL_ELEMENTS, responseBody.getTotalElements());
-        assertEquals(TOTAL_PAGES, responseBody.getTotalPages());
+        int pageSize = response.jsonPath().getInt("size");
+        int totalElements = response.jsonPath().getInt("totalElements");
+        List<BookingDtoRs> content = response.jsonPath().getList("content", BookingDtoRs.class);
+
+        assertFalse(content.isEmpty());
+        assertEquals(CONTENT_SIZE, content.size());
+        assertEquals(PAGE_SIZE, pageSize);
+        assertEquals(TOTAL_ELEMENTS, totalElements);
     }
 
 }

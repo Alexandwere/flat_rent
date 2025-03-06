@@ -14,12 +14,12 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
 
-    @Transactional()
+    @Transactional
     public ClientDto save(ClientDto clientDto) {
         Client client = clientRepository.save(clientMapper.toEntity(clientDto));
         return clientMapper.toDto(client);
     }
-
+    @Transactional
     public void delete(Integer id) {
         clientRepository.deleteById(id);
     }

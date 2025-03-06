@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({
-        IllegalArgumentException.class,
-        NotActiveAdvertException.class}
-    )
+    @ExceptionHandler(NotActiveAdvertException.class)
     public ResponseEntity<?> handle400exception(RuntimeException e) {
         log.warn(e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

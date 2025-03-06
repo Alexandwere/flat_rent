@@ -4,6 +4,10 @@ import com.javaacademy.flat_rent.dto.BookingDto;
 import com.javaacademy.flat_rent.dto.BookingDtoRs;
 import com.javaacademy.flat_rent.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,18 @@ public class BookingController {
 
     @Operation(summary = "Сохранение бронирования",
             description = "Сохранение бронирования, на вход клиент, ID апартаментов, даты бронирования.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Успешное сохранение.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BookingDtoRs.class))),
+            @ApiResponse(responseCode = "404", description = "Апартаменты не найдены.",
+                    content = @Content(mediaType = "plain/text")),
+            @ApiResponse(responseCode = "400", description = "Объявление неактивно.",
+                    content = @Content(mediaType = "plain/text")),
+            @ApiResponse(responseCode = "409", description = "Данные даты недоступны для бронирования.",
+                    content = @Content(mediaType = "plain/text"))
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public BookingDtoRs save(@RequestBody BookingDto bookingDto) {
@@ -36,6 +52,12 @@ public class BookingController {
 
     @Operation(summary = "Поиск бронирований по email",
             description = "Поиск бронирований по email.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Успешное поиск по email.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BookingDtoRs.class)))
+    })
     @GetMapping
     public Page<BookingDtoRs> findAllByEmail(
             @RequestParam(defaultValue = "0") Integer pageNumber,

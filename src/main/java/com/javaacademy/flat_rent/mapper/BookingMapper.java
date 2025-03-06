@@ -2,8 +2,10 @@ package com.javaacademy.flat_rent.mapper;
 
 import com.javaacademy.flat_rent.dto.BookingDto;
 import com.javaacademy.flat_rent.dto.BookingDtoRs;
+import com.javaacademy.flat_rent.dto.ClientDto;
 import com.javaacademy.flat_rent.entity.Advert;
 import com.javaacademy.flat_rent.entity.Booking;
+import com.javaacademy.flat_rent.entity.Client;
 import com.javaacademy.flat_rent.exception.EntityNotFoundException;
 import com.javaacademy.flat_rent.repository.AdvertRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
@@ -21,7 +23,7 @@ public abstract class BookingMapper {
     private ClientRepository clientRepository;
 
     @Mapping(target = "advert", source = "advertId", qualifiedByName = "getAdvert")
-    @Mapping(target = "client", source = "clientDto")
+    @Mapping(target = "client", source = "clientDto", qualifiedByName = "getClient")
     @Mapping(target = "resultPrice", ignore = true)
     public abstract Booking toEntityWithRelation(BookingDto bookingDto);
 
@@ -32,6 +34,13 @@ public abstract class BookingMapper {
         return advertRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Объявлений с таким ID (%s) не существует."
                         .formatted(id)));
+    }
+
+    @Named("getClient")
+    protected Client getClient(ClientDto clientDto) {
+        return clientRepository.findById(clientDto.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Клиент с ID = %s не найден.".formatted(clientDto.getId()))
+        );
     }
 
 }

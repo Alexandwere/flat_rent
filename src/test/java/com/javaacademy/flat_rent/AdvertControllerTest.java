@@ -12,9 +12,9 @@ import com.javaacademy.flat_rent.repository.BookingRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +22,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +41,9 @@ public class AdvertControllerTest {
     private static final int NO_EXISTS_APARTMENT_ID = -1;
     private static final int COUNT_ADVERTS = 2;
     private static final String CITY = "city";
-    private static final BigDecimal EXPECTED_PRICE = BigDecimal.ONE;
+    private static final BigDecimal EXPECTED_PRICE = BigDecimal.TEN;
+    private static final int EXPECTED_PAGE_SIZE = 10;
+    private static final int EXPECTED_TOTAL_ADVERT = 2;
 
     private final RequestSpecification requestSpecification = new RequestSpecBuilder()
             .setBasePath("/advert")
@@ -173,23 +175,27 @@ public class AdvertControllerTest {
                 .build();
         advertRepository.save(advert3);
 
-        Page<AdvertDto> responseBody = given(requestSpecification)
+        Response response = given(requestSpecification)
                 .queryParam("city", apartment2.getCity())
                 .get()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(OK.value())
                 .extract()
-                .body()
-                .as(new TypeRef<>() {
-                });
+                .response();
 
-        AdvertDto firstAdvertDto = responseBody.getContent().stream().findFirst().orElseThrow();
+        int pageSize = response.jsonPath().getInt("size");
+        int totalElements = response.jsonPath().getInt("totalElements");
+        List<AdvertDtoRs> content = response.jsonPath().getList("content", AdvertDtoRs.class);
+
+        AdvertDtoRs firstAdvertDto = content.stream().findFirst().orElseThrow();
         BigDecimal resultPrice = firstAdvertDto.getPrice();
-        assertEquals(COUNT_ADVERTS, responseBody.getContent().size());
-        assertEquals(EXPECTED_PRICE, resultPrice);
+        assertEquals(COUNT_ADVERTS, content.size());
+        assertEquals(0, EXPECTED_PRICE.compareTo(resultPrice));
+        assertEquals(EXPECTED_PAGE_SIZE, pageSize);
+        assertEquals(EXPECTED_TOTAL_ADVERT, totalElements);
 
-        Apartment resultApartment = apartmentRepository.findById(firstAdvertDto.getApartmentId()).orElseThrow();
+        Apartment resultApartment = apartmentRepository.findById(firstAdvertDto.getApartment().getId()).orElseThrow();
         String resultCity = resultApartment.getCity();
         assertEquals(CITY, resultCity);
     }
