@@ -5,9 +5,11 @@ import com.javaacademy.flat_rent.entity.Apartment;
 import com.javaacademy.flat_rent.mapper.ApartmentMapper;
 import com.javaacademy.flat_rent.repository.ApartmentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApartmentService {
@@ -17,6 +19,7 @@ public class ApartmentService {
     @Transactional
     public ApartmentDto save(ApartmentDto apartmentDto) {
         Apartment apartment = apartmentRepository.save(apartmentMapper.toEntity(apartmentDto));
+        log.info("Апартаменты сохранены.");
         return apartmentMapper.toDto(apartment);
     }
 }

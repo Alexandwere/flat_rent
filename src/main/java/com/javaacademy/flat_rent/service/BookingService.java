@@ -11,11 +11,11 @@ import com.javaacademy.flat_rent.mapper.BookingMapper;
 import com.javaacademy.flat_rent.repository.BookingRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -23,6 +23,7 @@ import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -32,7 +33,6 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final ClientService clientService;
     private final ClientRepository clientRepository;
-    private final TransactionTemplate transactionTemplate;
 
     @Transactional
     public BookingDtoRs save(BookingDto bookingDto) {
@@ -55,6 +55,7 @@ public class BookingService {
         }
         booking.setResultPrice(calculateResultPrice(booking));
         bookingRepository.save(booking);
+        log.info("Бронирование сохранено.");
         return bookingMapper.toDto(booking);
     }
 
@@ -62,6 +63,7 @@ public class BookingService {
     public Page<BookingDtoRs> findAllByEmail(Integer pageNumber, String email) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
         Page<Booking> bookings = bookingRepository.findAllByEmail(email, pageRequest);
+        log.info("Выполнен поиск бронирований по email.");
         return bookings.map(bookingMapper::toDto);
     }
 
@@ -89,5 +91,6 @@ public class BookingService {
         if (!canBook(bookingsByAdvert, bookingDto)) {
             throw new IntersectionDateException("Невозможно забронировать в эти даты.");
         }
+        log.info("Выполнена проверка дат.");
     }
 }

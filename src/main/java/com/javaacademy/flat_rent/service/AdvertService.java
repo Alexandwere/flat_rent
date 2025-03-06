@@ -6,12 +6,14 @@ import com.javaacademy.flat_rent.entity.Advert;
 import com.javaacademy.flat_rent.mapper.AdvertMapper;
 import com.javaacademy.flat_rent.repository.AdvertRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdvertService {
@@ -23,6 +25,7 @@ public class AdvertService {
     @Transactional
     public AdvertDtoRs save(AdvertDto advertDto) {
         Advert advert = advertRepository.save(advertMapper.toEntityWithRelation(advertDto));
+        log.info("Объявление сохранено");
         return advertMapper.toDto(advert);
     }
 
@@ -31,6 +34,7 @@ public class AdvertService {
         Sort sort = Sort.by(Sort.Direction.DESC, "price");
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, sort);
         Page<Advert> adverts = advertRepository.findAllByCity(city, pageRequest);
+        log.info("Выполнен поиск по городу.");
         return adverts.map(advertMapper::toDto);
     }
 
