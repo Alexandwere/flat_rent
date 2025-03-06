@@ -6,6 +6,7 @@ import com.javaacademy.flat_rent.dto.ClientDto;
 import com.javaacademy.flat_rent.entity.Booking;
 import com.javaacademy.flat_rent.exception.EntityNotFoundException;
 import com.javaacademy.flat_rent.exception.IntersectionDateException;
+import com.javaacademy.flat_rent.exception.NotActiveAdvertException;
 import com.javaacademy.flat_rent.mapper.BookingMapper;
 import com.javaacademy.flat_rent.repository.BookingRepository;
 import com.javaacademy.flat_rent.repository.ClientRepository;
@@ -36,14 +37,20 @@ public class BookingService {
         ClientDto clientDto = bookingDto.getClientDto();
         if (clientDto.getId() == null) {
             clientDto = clientService.save(clientDto);
+            bookingDto.setClientDto(clientDto);
         }
         if (!clientRepository.existsById(clientDto.getId())) {
-            throw new EntityNotFoundException("Клиента с ID = %s не существует.".formatted(clientDto.getId()));
+            throw new EntityNotFoundException("Клиента с ID = %s не существует."
+                    .formatted(clientDto.getId()));
         }
 
         checkDates(bookingDto);
-        bookingDto.setClientDto(clientDto);
+
         Booking booking = bookingMapper.toEntityWithRelation(bookingDto);
+        if (!booking.getAdvert().getIsActive()) {
+            throw new NotActiveAdvertException("Объявление с ID = %s не активно"
+                    .formatted(booking.getAdvert().getId()));
+        }
         booking.setResultPrice(calculateResultPrice(booking));
         Booking resultBooking = bookingRepository.save(booking);
         return bookingMapper.toDto(resultBooking);
@@ -76,7 +83,7 @@ public class BookingService {
             throw new IllegalArgumentException("Дата начала должна быть раньше даты окончания");
         }
 
-        List<Booking> bookingsByAdvert = bookingRepository.findAllByAdvertIdUsingNativeSQL(bookingDto.getAdvertId());
+        List<Booking> bookingsByAdvert = bookingRepository.findAllByAdvertId(bookingDto.getAdvertId());
         if (!canBook(bookingsByAdvert, bookingDto)) {
             throw new IntersectionDateException("Невозможно забронировать в эти даты.");
         }

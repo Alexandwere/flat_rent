@@ -2,22 +2,24 @@ package com.javaacademy.flat_rent.controller;
 
 import com.javaacademy.flat_rent.exception.EntityNotFoundException;
 import com.javaacademy.flat_rent.exception.IntersectionDateException;
+import com.javaacademy.flat_rent.exception.NotActiveAdvertException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @Hidden
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
         IllegalArgumentException.class,
         EntityNotFoundException.class,
-        IntersectionDateException.class}
+        IntersectionDateException.class,
+        NotActiveAdvertException.class}
     )
     public ResponseEntity<?> handle400exception(RuntimeException e) {
         log.warn(e.getMessage(), e);

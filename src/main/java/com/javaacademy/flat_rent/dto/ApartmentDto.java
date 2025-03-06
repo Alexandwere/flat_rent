@@ -3,11 +3,16 @@ package com.javaacademy.flat_rent.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.javaacademy.flat_rent.enums.ApartmentType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Schema(description = "Апартаменты")
 public class ApartmentDto {
     @Schema(description = "id")
     private Integer id;

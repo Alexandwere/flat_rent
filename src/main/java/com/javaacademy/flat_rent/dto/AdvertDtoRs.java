@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Объявление")
 public class AdvertDtoRs {
     @Schema(description = "id")
     private Integer id;

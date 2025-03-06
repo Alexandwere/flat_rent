@@ -9,9 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface AdvertRepository extends JpaRepository<Advert, Integer> {
 
     @Query(value = """
-            select ad.id, ad.price, ad.is_active, ad.apartment_id, id.description
-            from advert ad inner join apartment ap on ad.apartment_id = ap.id
-            where city = :city;
-            """, nativeQuery = true)
+            from Advert ad
+            where ad.apartment.city = :city
+            """)
     Page<Advert> findAllByCity(String city, Pageable pageable);
 }
