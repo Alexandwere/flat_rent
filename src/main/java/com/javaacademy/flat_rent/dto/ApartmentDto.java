@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Data
 @Builder
@@ -14,19 +15,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(description = "Апартаменты")
 public class ApartmentDto {
-    @Schema(description = "id")
+    @Schema(description = "id", examples = {"null", "1"}, nullable = true)
     private Integer id;
 
-    @Schema(description = "город")
+    @Schema(description = "город", example = "Moscow")
+    @NonNull
     private String city;
 
-    @Schema(description = "улица")
+    @Schema(description = "улица", example = "Хлебная")
+    @NonNull
     private String street;
 
-    @Schema(description = "дом")
+    @Schema(description = "дом", example = "1Б")
+    @NonNull
     private String house;
 
-    @Schema(description = "типа апартаментов")
+    @Schema(description = "тип апартаментов", example = "TWO_ROOMS")
     @JsonProperty("apartment_type")
+    @NonNull
     private ApartmentType apartmentType;
 }

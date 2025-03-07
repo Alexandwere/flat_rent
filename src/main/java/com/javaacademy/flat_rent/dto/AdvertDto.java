@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.math.BigDecimal;
 
@@ -15,20 +16,24 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Schema(description = "Регистрация объявления")
 public class AdvertDto {
-    @Schema(description = "id")
+    @Schema(description = "id", examples = {"null", "1"}, nullable = true)
     private Integer id;
 
-    @Schema(description = "цена")
+    @Schema(description = "цена", example = "100")
+    @NonNull
     private BigDecimal price;
 
-    @Schema(description = "активность")
+    @Schema(description = "активность", example = "true")
     @JsonProperty("is_active")
+    @NonNull
     private Boolean isActive;
 
     @Schema(description = "id апартаментов")
     @JsonProperty("apartment_id")
+    @NonNull
     private Integer apartmentId;
 
-    @Schema(description = "описание")
+    @Schema(description = "описание", example = "Апартаменты в центре города.")
+    @NonNull
     private String description;
 }

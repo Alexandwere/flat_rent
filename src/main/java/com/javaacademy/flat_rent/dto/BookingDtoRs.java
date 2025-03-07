@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Schema(description = "Бронирование")
 public class BookingDtoRs {
-    @Schema(description = "id")
+    @Schema(description = "id", example = "1")
     private Integer id;
 
     @Schema(description = "клиент")
@@ -24,17 +24,17 @@ public class BookingDtoRs {
     @Schema(description = "объявление")
     private AdvertDtoRs advert;
 
-    @Schema(description = "дата начала")
+    @Schema(description = "дата начала", example = "2025-01-01")
     @JsonProperty("date_start")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateStart;
 
-    @Schema(description = "дата окончания")
+    @Schema(description = "дата окончания", example = "2025-01-10")
     @JsonProperty("date_finish")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFinish;
 
-    @Schema(description = "итоговая цена")
+    @Schema(description = "итоговая цена", example = "1000")
     @JsonProperty("result_price")
     private BigDecimal resultPrice;
 }

@@ -13,19 +13,19 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Schema(description = "Объявление")
 public class AdvertDtoRs {
-    @Schema(description = "id")
+    @Schema(description = "id", example = "1")
     private Integer id;
 
-    @Schema(description = "цена")
+    @Schema(description = "цена", example = "100")
     private BigDecimal price;
 
-    @Schema(description = "активность")
+    @Schema(description = "активность", example = "true")
     @JsonProperty("is_active")
     private Boolean isActive;
 
     @Schema(description = "апартаменты")
     private ApartmentDto apartment;
 
-    @Schema(description = "описание")
+    @Schema(description = "описание", example = "Апартаменты в центре города.")
     private String description;
 }

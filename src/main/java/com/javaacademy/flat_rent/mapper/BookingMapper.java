@@ -32,7 +32,7 @@ public abstract class BookingMapper {
     @Named("getAdvert")
     protected Advert getAdvert(Integer id) {
         return advertRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Объявлений с таким ID (%s) не существует."
+                .orElseThrow(() -> new EntityNotFoundException("Объявлений с ID = %s не найдено."
                         .formatted(id)));
     }
 

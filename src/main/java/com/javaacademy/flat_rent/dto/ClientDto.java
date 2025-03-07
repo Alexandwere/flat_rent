@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Data
 @Builder
@@ -12,12 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(description = "Клиент")
 public class ClientDto {
-    @Schema(description = "id")
+    @Schema(description = "id", examples = {"null", "1"}, nullable = true)
     private Integer id;
 
-    @Schema(description = "имя")
+    @Schema(description = "имя", example = "Ирина")
+    @NonNull
     private String name;
 
-    @Schema(description = "эл. почта")
+    @Schema(description = "эл. почта", example = "irina@mail.ru")
+    @NonNull
     private String email;
 }

@@ -26,7 +26,7 @@ public abstract class AdvertMapper {
     @Named("getApartment")
     protected Apartment getApartment(Integer apartmentId) {
         return apartmentRepository.findById(apartmentId)
-                .orElseThrow(() -> new EntityNotFoundException("Квартир с таким ID (%s) не существует."
+                .orElseThrow(() -> new EntityNotFoundException("Квартир с ID = %s не существует."
                         .formatted(apartmentId)));
     }
 }
