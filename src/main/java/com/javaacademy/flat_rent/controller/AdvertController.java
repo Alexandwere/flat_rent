@@ -59,8 +59,8 @@ public class AdvertController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public Page<AdvertDtoRs> findAllByCity(
-            @RequestParam(name = "номер страницы", defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "Город") String city) {
+            @RequestParam(defaultValue = "0") Integer pageNumber,
+            @RequestParam String city) {
         return advertService.findAllByCity(pageNumber, city);
     }
 }
