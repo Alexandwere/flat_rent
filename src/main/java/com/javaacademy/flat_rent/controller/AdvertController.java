@@ -56,6 +56,7 @@ public class AdvertController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = Page.class)))
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public Page<AdvertDtoRs> findAllByCity(
             @RequestParam(name = "номер страницы", defaultValue = "0") Integer pageNumber,

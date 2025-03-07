@@ -58,6 +58,7 @@ public class BookingController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = BookingDtoRs.class)))
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public Page<BookingDtoRs> findAllByEmail(
             @RequestParam(name = "номер страницы", defaultValue = "0") Integer pageNumber,
