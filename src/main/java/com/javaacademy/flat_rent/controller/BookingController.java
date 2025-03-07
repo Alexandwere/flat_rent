@@ -39,9 +39,7 @@ public class BookingController {
                             schema = @Schema(implementation = BookingDtoRs.class))),
             @ApiResponse(responseCode = "404", description = "Апартаменты не найдены.",
                     content = @Content(mediaType = "plain/text")),
-            @ApiResponse(responseCode = "409", description = "Объявление неактивно.",
-                    content = @Content(mediaType = "plain/text")),
-            @ApiResponse(responseCode = "409", description = "Данные даты недоступны для бронирования.",
+            @ApiResponse(responseCode = "409", description = "Объявление неактивно или даты недоступны.",
                     content = @Content(mediaType = "plain/text"))
     })
     @ResponseStatus(HttpStatus.CREATED)
