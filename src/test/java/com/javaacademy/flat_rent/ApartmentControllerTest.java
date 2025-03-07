@@ -3,10 +3,7 @@ package com.javaacademy.flat_rent;
 import com.javaacademy.flat_rent.dto.ApartmentDto;
 import com.javaacademy.flat_rent.entity.Apartment;
 import com.javaacademy.flat_rent.enums.ApartmentType;
-import com.javaacademy.flat_rent.repository.AdvertRepository;
 import com.javaacademy.flat_rent.repository.ApartmentRepository;
-import com.javaacademy.flat_rent.repository.BookingRepository;
-import com.javaacademy.flat_rent.repository.ClientRepository;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -18,15 +15,27 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DisplayName("Тесты контроллера апартаментов")
 public class ApartmentControllerTest {
+    private static final int ID = 1;
+    private static final String CITY = "city";
+    private static final String STREET = "street";
+    private static final String HOUSE = "1";
+    private static final String CLEAN_TABLES = """
+            delete from booking;
+            delete from advert;
+            delete from client;
+            delete from apartment;
+            """;
 
     private final RequestSpecification requestSpecification = new RequestSpecBuilder()
             .setBasePath("/apartment")
@@ -42,30 +51,20 @@ public class ApartmentControllerTest {
     private ApartmentRepository apartmentRepository;
 
     @Autowired
-    private AdvertRepository advertRepository;
+    private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @BeforeEach
-    public void cleanup() {
-        bookingRepository.deleteAll();
-        advertRepository.deleteAll();
-        clientRepository.deleteAll();
-        apartmentRepository.deleteAll();
+    @BeforeEach()
+    public void cleanUpDatabase() {
+        jdbcTemplate.execute(CLEAN_TABLES);
     }
 
     @Test
     @DisplayName("Успешное создание апартаментов")
     public void createApartmentSuccess() {
         ApartmentDto apartmentDtoRq = ApartmentDto.builder()
-                .id(null)
-                .city("city")
-                .street("street")
-                .house("1")
+                .city(CITY)
+                .street(STREET)
+                .house(HOUSE)
                 .apartmentType(ApartmentType.ONE_ROOM)
                 .build();
 
@@ -82,8 +81,28 @@ public class ApartmentControllerTest {
         Apartment apartment = apartmentRepository.findById(apartmentDtoRs.getId()).orElseThrow();
 
         assertNotNull(apartmentDtoRs.getId());
-        assertEquals(apartmentDtoRq.getCity(), apartment.getCity());
-        assertEquals(apartmentDtoRq.getHouse(), apartment.getHouse());
+        assertEquals(CITY, apartment.getCity());
+        assertEquals(STREET, apartment.getStreet());
+        assertEquals(HOUSE, apartment.getHouse());
         assertEquals(apartmentDtoRq.getApartmentType(), apartment.getApartmentType());
+    }
+
+    @Test
+    @DisplayName("Сохранение апартаментов - ошибка, введен ID")
+    public void createApartmentFailedById() {
+        ApartmentDto apartmentDtoRq = ApartmentDto.builder()
+                .id(ID)
+                .city(CITY)
+                .street(STREET)
+                .house(HOUSE)
+                .apartmentType(ApartmentType.ONE_ROOM)
+                .build();
+
+        given(requestSpecification)
+                .body(apartmentDtoRq)
+                .post()
+                .then()
+                .spec(responseSpecification)
+                .statusCode(BAD_REQUEST.value());
     }
 }

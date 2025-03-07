@@ -5,11 +5,8 @@ import com.javaacademy.flat_rent.dto.AdvertDtoRs;
 import com.javaacademy.flat_rent.dto.ApartmentDto;
 import com.javaacademy.flat_rent.entity.Advert;
 import com.javaacademy.flat_rent.entity.Apartment;
-import com.javaacademy.flat_rent.enums.ApartmentType;
 import com.javaacademy.flat_rent.repository.AdvertRepository;
 import com.javaacademy.flat_rent.repository.ApartmentRepository;
-import com.javaacademy.flat_rent.repository.BookingRepository;
-import com.javaacademy.flat_rent.repository.ClientRepository;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -22,13 +19,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.javaacademy.flat_rent.enums.ApartmentType.ONE_ROOM;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -38,12 +38,23 @@ import static org.springframework.http.HttpStatus.OK;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DisplayName("Тесты контроллера объявлений")
 public class AdvertControllerTest {
-    private static final int NO_EXISTS_APARTMENT_ID = -1;
-    private static final int COUNT_ADVERTS = 2;
+    private static final int NON_EXISTENT_ID = -1;
+    private static final int COUNT_ADVERTS_BY_CITY = 2;
     private static final String CITY = "city";
-    private static final BigDecimal EXPECTED_PRICE = BigDecimal.TEN;
+    private static final String STREET = "street";
+    private static final String HOUSE = "1";
+    private static final String DESCRIPTION = "Описание";
+    private static final BigDecimal EXPECTED_PRICE = BigDecimal.ONE;
     private static final int EXPECTED_PAGE_SIZE = 10;
     private static final int EXPECTED_TOTAL_ADVERT = 2;
+    private static final int EXPECTED_PAGE_NUMBER = 0;
+    private static final int EXPECTED_TOTAL_PAGES = 1;
+    private static final String CLEAN_TABLES = """
+            delete from booking;
+            delete from advert;
+            delete from client;
+            delete from apartment;
+            """;
 
     private final RequestSpecification requestSpecification = new RequestSpecBuilder()
             .setBasePath("/advert")
@@ -62,37 +73,23 @@ public class AdvertControllerTest {
     private AdvertRepository advertRepository;
 
     @Autowired
-    private BookingRepository bookingRepository;
+    private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @BeforeEach
-    public void cleanup() {
-        bookingRepository.deleteAll();
-        advertRepository.deleteAll();
-        clientRepository.deleteAll();
-        apartmentRepository.deleteAll();
+    @BeforeEach()
+    public void cleanUpDatabase() {
+        jdbcTemplate.execute(CLEAN_TABLES);
     }
 
     @Test
     @DisplayName("Успешное создание объявления")
     public void createAdvertSuccess() {
-        Apartment apartment = Apartment.builder()
-                .city(CITY)
-                .street("street")
-                .house("1")
-                .apartmentType(ApartmentType.ONE_ROOM)
-                .build();
-        apartment = apartmentRepository.save(apartment);
-
+        Apartment apartment = saveApartment();
         AdvertDto advertDtoRq = AdvertDto.builder()
                 .apartmentId(apartment.getId())
                 .price(BigDecimal.TEN)
-                .description("Однокомнатная")
+                .description(DESCRIPTION)
                 .isActive(true)
                 .build();
-
         AdvertDtoRs advertDtoRs = given(requestSpecification)
                 .body(advertDtoRq)
                 .post()
@@ -116,9 +113,9 @@ public class AdvertControllerTest {
     @DisplayName("Создание объявления на не существующую квартиру - ошибка")
     public void createFailed() {
         AdvertDto advertDtoRq = AdvertDto.builder()
-                .apartmentId(NO_EXISTS_APARTMENT_ID)
+                .apartmentId(NON_EXISTENT_ID)
                 .price(BigDecimal.TEN)
-                .description("Однокомнатная")
+                .description(DESCRIPTION)
                 .isActive(true)
                 .build();
 
@@ -133,50 +130,21 @@ public class AdvertControllerTest {
     @Test
     @DisplayName("Успешный поиск объявлений по городу.")
     public void findByCitySuccess() {
-        Apartment apartment = Apartment.builder()
-                .city(CITY)
-                .street("street")
-                .house("1")
-                .apartmentType(ApartmentType.ONE_ROOM)
-                .build();
-        Advert advert = Advert.builder()
-                .price(BigDecimal.ONE)
-                .description("Описание")
-                .apartment(apartment)
-                .isActive(true)
-                .build();
-        advertRepository.save(advert);
+        Apartment apartment = saveApartment();
+        saveAdvert(apartment);
+        saveAdvert(apartment);
 
         Apartment apartment2 = Apartment.builder()
-                .city(CITY)
-                .street("street")
-                .house("2")
-                .apartmentType(ApartmentType.ONE_ROOM)
+                .city("OtherCity")
+                .street(STREET)
+                .house(HOUSE)
+                .apartmentType(ONE_ROOM)
                 .build();
-        Advert advert2 = Advert.builder()
-                .price(BigDecimal.TEN)
-                .description("Описание")
-                .apartment(apartment2)
-                .isActive(true)
-                .build();
-        advertRepository.save(advert2);
-
-        Apartment apartment3 = Apartment.builder()
-                .city("city3")
-                .street("street")
-                .house("1")
-                .apartmentType(ApartmentType.ONE_ROOM)
-                .build();
-        Advert advert3 = Advert.builder()
-                .price(BigDecimal.ONE)
-                .description("Описание")
-                .apartment(apartment3)
-                .isActive(true)
-                .build();
-        advertRepository.save(advert3);
+        apartment2 = apartmentRepository.save(apartment2);
+        saveAdvert(apartment2);
 
         Response response = given(requestSpecification)
-                .queryParam("city", apartment2.getCity())
+                .queryParam("city", apartment.getCity())
                 .get()
                 .then()
                 .spec(responseSpecification)
@@ -184,19 +152,64 @@ public class AdvertControllerTest {
                 .extract()
                 .response();
 
-        int pageSize = response.jsonPath().getInt("size");
+        int pageNumber = response.jsonPath().getInt("pageable.pageNumber");
+        int totalPages = response.jsonPath().getInt("totalPages");
+        int size = response.jsonPath().getInt("size");
         int totalElements = response.jsonPath().getInt("totalElements");
         List<AdvertDtoRs> content = response.jsonPath().getList("content", AdvertDtoRs.class);
 
         AdvertDtoRs firstAdvertDto = content.stream().findFirst().orElseThrow();
         BigDecimal resultPrice = firstAdvertDto.getPrice();
-        assertEquals(COUNT_ADVERTS, content.size());
+        assertEquals(COUNT_ADVERTS_BY_CITY, content.size());
         assertEquals(0, EXPECTED_PRICE.compareTo(resultPrice));
-        assertEquals(EXPECTED_PAGE_SIZE, pageSize);
+        assertEquals(EXPECTED_PAGE_SIZE, size);
         assertEquals(EXPECTED_TOTAL_ADVERT, totalElements);
+        assertEquals(EXPECTED_PAGE_NUMBER, pageNumber);
+        assertEquals(EXPECTED_TOTAL_PAGES, totalPages);
 
         Apartment resultApartment = apartmentRepository.findById(firstAdvertDto.getApartment().getId()).orElseThrow();
         String resultCity = resultApartment.getCity();
         assertEquals(CITY, resultCity);
     }
+
+    @Test
+    @DisplayName("Создание объявления с введенным id - ошибка")
+    public void createWithIdFailed() {
+        Apartment apartment = saveApartment();
+        AdvertDto advertDtoRq = AdvertDto.builder()
+                .id(NON_EXISTENT_ID)
+                .apartmentId(apartment.getId())
+                .price(BigDecimal.TEN)
+                .description(DESCRIPTION)
+                .isActive(true)
+                .build();
+
+        given(requestSpecification)
+                .body(advertDtoRq)
+                .post()
+                .then()
+                .spec(responseSpecification)
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    private Apartment saveApartment() {
+        Apartment apartment = Apartment.builder()
+                .city(CITY)
+                .street(STREET)
+                .house(HOUSE)
+                .apartmentType(ONE_ROOM)
+                .build();
+        return apartmentRepository.save(apartment);
+    }
+
+    private void saveAdvert(Apartment apartment) {
+        Advert advert = Advert.builder()
+                .price(BigDecimal.ONE)
+                .description(DESCRIPTION)
+                .apartment(apartment)
+                .isActive(true)
+                .build();
+        advertRepository.save(advert);
+    }
+
 }

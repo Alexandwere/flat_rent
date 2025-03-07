@@ -54,9 +54,7 @@ public class AdvertController {
             @ApiResponse(responseCode = "200", description = "Успешный поиск по городу.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AdvertDtoRs.class))),
-            @ApiResponse(responseCode = "404", description = "Апартаменты не найдены.",
-                    content = @Content(mediaType = "plain/text"))
+                            schema = @Schema(implementation = Page.class)))
     })
     @GetMapping
     public Page<AdvertDtoRs> findAllByCity(
