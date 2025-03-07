@@ -58,8 +58,8 @@ public class AdvertController {
     })
     @GetMapping
     public Page<AdvertDtoRs> findAllByCity(
-            @RequestParam(defaultValue = "0") Integer pageNumber,
-            @RequestParam String city) {
+            @RequestParam(name = "номер страницы", defaultValue = "0") Integer pageNumber,
+            @RequestParam(name = "Город") String city) {
         return advertService.findAllByCity(pageNumber, city);
     }
 }
