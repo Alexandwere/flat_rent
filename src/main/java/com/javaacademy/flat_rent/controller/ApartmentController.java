@@ -29,12 +29,7 @@ public class ApartmentController {
 
     @Operation(summary = "Сохранение апартаментов",
             description = "Сохранения апартаментов по городу, улице, номеру дома и типа апартаментов. "
-                    + "Возможные типы: "
-                    + "ONLY_ROOM, "
-                    + "ONE_ROOM, "
-                    + "TWO_ROOMS, "
-                    + "THREE_ROOMS, "
-                    + "FOUR_AND_MORE_ROOMS.")
+                    + "Возможные типы: ONLY_ROOM, ONE_ROOM, TWO_ROOMS, THREE_ROOMS, FOUR_AND_MORE_ROOMS.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Успешное сохранение.",
                     content = @Content(
