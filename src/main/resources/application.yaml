@@ -17,4 +17,4 @@ spring:
         hibernate:
           orm:
             jdbc:
-              bind: trace
+              bind: info

@@ -41,7 +41,7 @@ public class Advert {
     private Boolean isActive;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 
@@ -49,6 +49,6 @@ public class Advert {
     private String description;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "advert", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "advert", fetch = FetchType.LAZY)
     private List<Booking> bookings;
 }

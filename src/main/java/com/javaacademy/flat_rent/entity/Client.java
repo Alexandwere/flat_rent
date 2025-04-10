@@ -1,5 +1,6 @@
 package com.javaacademy.flat_rent.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,6 +39,6 @@ public class Client {
     private String email;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Booking> bookings;
 }
